@@ -1,0 +1,534 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-dark: #1a202c;
+    --primary-darker: #0f1419;
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e0;
+    --text-light: #a0aec0;
+    --accent-blue: #3b82f6;
+    --accent-blue-dark: #1d4ed8;
+    --accent-red: #ef4444;
+    --accent-red-dark: #dc2626;
+    --accent-orange: #f97316;
+    --accent-yellow: #fbbf24;
+    --accent-green: #10b981;
+    --bg-card: #2d3748;
+    --bg-hover: #374151;
+    --border-color: #4a5568;
+    --range-fill: #3b82f6; /* left-side fill: primary blue */
+    --range-empty: rgba(255,255,255,0.06); /* default empty track (grey-on-dark) */
+    --success: #10b981;
+    --warning: #fbbf24;
+    --error: #ef4444;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-darker) 100%);
+    color: var(--text-primary);
+    .ci-dark .btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .ci-dark .btn-primary {
+        background: var(--accent-blue);
+        color: white;
+    }
+
+    .ci-dark .btn-primary:hover {
+        background: var(--accent-blue-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    .ci-dark .btn-secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .ci-dark .btn-secondary:hover {
+        background: var(--bg-card);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .ci-dark .btn-edit {
+        background: var(--accent-blue);
+        color: white;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .ci-dark .btn-delete {
+        background: var(--accent-red);
+        color: white;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+.score-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+/* When using Bootstrap's .row together with our .score-summary, override the row negative gutters
+   which can cause horizontal scroll on narrow viewports. Ensure no extra horizontal margin. */
+.score-summary.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ci-dark .summary-card {
+    /* Use Bootstrap card backgrounds, but ensure dark theme colors in the scoped container */
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.risk-tier-display {
+    display: flex;
+    align-items: center;
+}
+
+.tier-badge {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    min-width: 120px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.tier-badge.unknown {
+    background: rgba(107, 114, 128, 0.2);
+    color: #9ca3af;
+}
+
+.tier-badge.minimal {
+    background: rgba(6, 165, 233, 0.15);
+    color: #06a5e9;
+}
+
+.tier-badge.low {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.tier-badge.medium {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+}
+
+.tier-badge.high {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+
+.tier-badge.critical {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* Progress Section */
+.progress-section {
+    background: var(--bg-card);
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.progress-container {
+    margin-bottom: 12px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.label-left {
+    position: absolute;
+    left: 0;
+}
+
+.label-center-left {
+    position: absolute;
+    left: 15%;
+}
+
+.label-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.label-center-right {
+    position: absolute;
+    right: 15%;
+}
+
+.label-right {
+    position: absolute;
+    right: 0;
+}
+
+.progress-bar-outer {
+    width: 100%;
+    height: 10px;
+    /* empty colored background (subtle red tint) so the fill shows clearly */
+    background: rgba(239,68,68,0.06);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent-red);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.25);
+}
+
+/* Ensure the main progress fill is empty by default until JS sets a width */
+.progress-bar-fill {
+    width: 0%;
+}
+
+.risk-message {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+/* Main Content */
+main {
+    padding: 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Assessment Form */
+.assessment-form {
+    background: transparent;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+/* Categories Container */
+.categories-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Category Item */
+.category-item {
+    transition: all 0.3s ease;
+}
+
+.category-item.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+.category-item.card:hover {
+    border-color: var(--accent-blue);
+    background: var(--bg-hover);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.category-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.category-score {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.category-description {
+    font-size: 1.1rem;
+    color: #cacaca;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+/* Category Input Group */
+.category-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    /* default track is empty grey; JS paints left-side blue fill */
+    background: var(--range-empty);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Ensure the native track elements don't obscure the painted background */
+.category-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    background: transparent;
+    border-radius: 3px;
+}
+
+.category-slider::-moz-range-track {
+    height: 6px;
+    background: transparent;
+    border-radius: 3px;
+}
+
+.category-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--range-fill);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(59,130,246,0.25);
+    border: 2px solid var(--bg-card);
+    transition: all 0.2s ease;
+}
+
+.category-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.6);
+}
+
+.category-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--range-fill);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(107, 33, 168, 0.35);
+    border: 2px solid var(--bg-card);
+    transition: all 0.2s ease;
+}
+
+.category-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.6);
+}
+
+/* Category Progress Bar */
+.category-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(59, 130, 246, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.category-progress-fill {
+    height: 100%;
+    background: var(--accent-red);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: none !important;
+    gap: 10px;
+    justify-content: center;
+    padding-top: 12px;
+    flex-shrink: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--accent-blue-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-card);
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.btn-edit {
+    background: var(--accent-blue);
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-delete {
+    background: var(--accent-red);
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 12px 0;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 12px;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .score-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-value {
+        font-size: 2.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    .summary-value {
+        font-size: 2rem;
+    }
+
+    .tier-badge {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        min-width: 100px;
+    }
+
+    .progress-labels {
+        font-size: 0.75rem;
+    }
+
+    .category-name {
+        font-size: 0.95rem;
+    }
+
+    .category-score {
+        font-size: 0.9rem;
+    }
+}
+}

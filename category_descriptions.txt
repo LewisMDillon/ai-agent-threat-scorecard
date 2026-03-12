@@ -1,0 +1,74 @@
+AI Agent Threat Modelling Scorecard – Suggested Level Definitions
+1. Internet Access (0–3)
+
+0 — None
+The agent has no internet access. It cannot make outbound network requests and can only interact with local resources or predefined internal APIs.
+
+1 — Restricted / Allow-Listed
+The agent can access a limited set of predefined internet endpoints through an allow-list or controlled API gateway. All requests are constrained to specific domains or services.
+
+2 — Monitored External Access
+The agent can access external internet endpoints but requests are routed through a monitored proxy, logging system, or security gateway. Requests may be rate-limited or inspected for policy violations.
+
+3 — Unrestricted (given)
+The agent can make outbound requests to any internet endpoint without restriction, logging, or proxy. Full open internet access.
+
+2. Sensitive Data Access (0–3)
+
+0 — None (given)
+The agent does not access any data stores or user data. It operates only on ephemeral inputs provided in the request context.
+
+1 — Limited Non-Sensitive Data
+The agent can access internal data sources that contain operational or non-sensitive information (e.g., documentation, product catalogs, public datasets) but no personal, financial, or regulated data.
+
+2 — Sensitive Data (Controlled)
+The agent can access sensitive internal or user data such as personal information, customer records, or internal business data, but access is limited by role-based permissions, scoped queries, or auditing controls.
+
+3 — Highly Sensitive / Broad Access
+The agent has access to highly sensitive or regulated data such as financial records, credentials, health data, or confidential corporate information, potentially across multiple systems or tenants.
+
+3. High-Risk Tool Access (0–4)
+
+0 — No Tool Access
+The agent cannot execute tools or external system actions. It can only generate responses or recommendations.
+
+1 — Low-Risk Tools
+The agent can use low-risk tools such as calculators, search APIs, or read-only utilities that do not modify systems or data.
+
+2 — Limited System Interaction
+The agent can interact with internal services or APIs that modify data or trigger actions but only within tightly scoped permissions and non-critical environments.
+
+3 — Privileged Operational Tools
+The agent can perform impactful system operations such as modifying production data, triggering deployments, managing workflows, or interacting with internal infrastructure.
+
+4 — Unrestricted Tool Access (given)
+The agent has access to administrative or root-level tools including shell access, database admin, IAM management, or the ability to grant permissions to other agents.
+
+4. Untrusted Input Processing (0–2)
+
+0 — Trusted / Structured Input Only
+The agent only processes structured or validated inputs from trusted systems (e.g., fixed schemas, internal APIs, sanitized data pipelines).
+
+1 — Semi-Trusted External Input
+The agent processes external inputs that may contain free-form content but are subject to validation, sanitization, filtering, or schema constraints before processing.
+
+2 — Raw External (given)
+The agent processes raw, unvalidated external input such as free-text user prompts, email contents, uploaded files, or scraped web content.
+
+5. Automated Actions / Autonomy (0–4)
+
+0 — No Autonomy
+The agent only provides recommendations or analysis. All actions must be explicitly initiated and executed by a human operator.
+
+1 — Assisted Automation
+The agent can perform simple automated actions but only in response to direct human prompts and with limited scope.
+
+2 — Conditional Automation
+The agent can execute predefined workflows automatically under specific conditions, but key actions require approval or checkpoints.
+
+3 — High Automation with Oversight
+The agent can perform multi-step workflows and system interactions autonomously but operates within guardrails such as monitoring, rate limits, or human override mechanisms.
+
+4 — Full Autonomy (given)
+The agent operates with full autonomy including the ability to spawn sub-agents, chain actions across systems, and execute multi-step workflows without human intervention.
+
