@@ -84,10 +84,15 @@ body {
     }
 .score-summary {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* allow a third, auto-sized column for the timestamp on larger screens */
+    grid-template-columns: 1fr 1fr auto;
     gap: 12px;
     margin-bottom: 16px;
     flex-shrink: 0;
+}
+
+#mainTitle {
+    margin-top: 20px !important;
 }
 
 /* When using Bootstrap's .row together with our .score-summary, override the row negative gutters
@@ -121,6 +126,30 @@ body {
 .risk-tier-display {
     display: flex;
     align-items: center;
+}
+
+#snapshotTimestamp {
+    color: var(--text-light) !important;
+    font-size: 0.85rem;
+}
+
+/* Subtle, theme-matching text inputs for project/user at the top */
+.ci-dark .form-control.subtle {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-primary);
+    padding: 8px 10px;
+    border-radius: 6px;
+}
+.ci-dark .form-control.subtle::placeholder {
+    color: var(--text-light);
+    opacity: 0.9;
+}
+.top-meta {
+    width: 100%;
+}
+.top-meta .text-end small {
+    color: var(--text-light);
 }
 
 .tier-badge {
@@ -167,10 +196,10 @@ body {
 /* Progress Section */
 .progress-section {
     background: var(--bg-card);
-    padding: 16px;
+    padding: 20px;
     border-radius: 6px;
     border: 1px solid var(--border-color);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     flex-shrink: 0;
 }
 
@@ -238,10 +267,10 @@ body {
 }
 
 .risk-message {
-    margin-top: 20px;
-    font-size: 1.2rem;
+    margin-top: 12px;
+    font-size: 1.05rem;
     color: #ffffff;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Main Content */
@@ -267,8 +296,8 @@ main {
 .categories-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 5px;
+    margin-bottom: 12px;
 }
 
 /* Category Item */
@@ -307,10 +336,10 @@ main {
 }
 
 .category-description {
-    font-size: 1.1rem;
+    font-size: 1.02rem;
     color: #cacaca;
-    margin-bottom: 10px;
-    line-height: 1.3;
+    margin-bottom: 6px;
+    line-height: 1.25;
 }
 
 /* Category Input Group */
@@ -397,21 +426,20 @@ main {
 
 /* Action Buttons */
 .action-buttons {
-    display: none !important;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
-    padding-top: 12px;
+    padding-top: 6px;
     flex-shrink: 0;
 }
 
 .btn {
-    padding: 10px 20px;
-    font-size: 0.85rem;
+    padding: 8px 14px;
+    font-size: 0.82rem;
     font-weight: 600;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .btn-primary {

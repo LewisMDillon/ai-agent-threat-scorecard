@@ -13,29 +13,44 @@
     <div class="container ci-dark">
         <header>
             <div class="header-top">
-                <h1>AI Agent Threat Modelling Scorecard</h1>
-                <div class="header-actions">
-                    <button class="btn btn-outline-light" id="resetBtn">Reset</button>
+                <h1 id="mainTitle">AI Agent Threat Modelling Scorecard</h1>
+                <!-- header actions removed: top Reset button deleted; use form Reset at bottom -->
+            </div>
+            <!-- Top metadata: project / user inputs -->
+            <div class="top-meta mt-3 mb-2">
+                <div class="row gx-2 align-items-center">
+                    <div class="col-12 col-md-6 mb-2">
+                        <input type="text" id="projectName" class="form-control subtle" placeholder="Project name (for snapshot)">
+                    </div>
+                    <div class="col-12 col-md-6 mb-2">
+                        <input type="text" id="userName" class="form-control subtle" placeholder="Your name">
+                    </div>
                 </div>
+                <!-- timestamp moved into score-summary for a more compact layout -->
             </div>
         </header>
 
         <main>
             <!-- Score Summary Section -->
             <div class="score-summary row">
-                <div class="card summary-card col-12 col-md-6">
+                <div class="card summary-card col-12 col-md-5">
                     <div class="card-body p-3">
                         <div class="summary-label">Total Score</div>
                         <div class="summary-value" id="totalScore">0</div>
                     </div>
                 </div>
-                <div class="card summary-card col-12 col-md-6">
+                <div class="card summary-card col-12 col-md-5">
                     <div class="card-body p-3">
                         <div class="summary-label">Risk Tier</div>
                         <div class="risk-tier-display" id="riskTierDisplay">
-                            <span class="tier-badge unknown" id="tierBadge">UNKNOWN</span>
+                                        <div class="d-flex align-items-center">
+                                            <span class="tier-badge unknown me-3" id="tierBadge">UNKNOWN</span>
+                                        </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-center justify-content-end">
+                    <small id="snapshotTimestamp" class="text-muted">Not set</small>
                 </div>
             </div>
 
@@ -65,7 +80,7 @@
                 </div>
                 <div class="action-buttons d-flex justify-content-center mt-3">
                     <button type="reset" class="btn btn-outline-light me-2">Reset</button>
-                    <button type="button" class="btn btn-primary" id="saveBtn">Save Assessment</button>
+                    <button type="button" class="btn btn-success" id="saveSnapshotMdBtn">Save Snapshot (Markdown)</button>
                 </div>
             </form>
         </main>
@@ -75,8 +90,27 @@
         </footer>
     </div>
 
-    <script src="assets/js/script.js"></script>
-    <!-- Bootstrap Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap Bundle (includes Popper) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Message modal (used instead of alert()) -->
+        <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header bg-info text-light">
+                        <h5 class="modal-title" id="messageModalTitle">Message</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="messageModalBody">
+                        <!-- message body inserted here -->
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/js/script.js"></script>
 </body>
 </html>

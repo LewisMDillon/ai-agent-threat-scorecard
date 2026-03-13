@@ -98,6 +98,34 @@ class ThreatModelScorecard {
         this.init();
     }
 
+    showMessage(title, message, level = 'info') {
+        // Prefer Bootstrap modal when available; fall back to alert()
+        const modalEl = document.getElementById('messageModal');
+        if (!modalEl || typeof bootstrap === 'undefined') {
+            alert(`${title}\n\n${message}`);
+            return;
+        }
+
+        const titleEl = modalEl.querySelector('.modal-title');
+        const bodyEl = modalEl.querySelector('.modal-body');
+        const headerEl = modalEl.querySelector('.modal-header');
+
+        if (titleEl) titleEl.textContent = title;
+        if (bodyEl) bodyEl.textContent = message;
+
+        // Normalize header classes
+        headerEl.classList.remove('bg-success', 'bg-danger', 'bg-info', 'text-light');
+        if (level === 'success') {
+            headerEl.classList.add('bg-success', 'text-light');
+        } else if (level === 'danger') {
+            headerEl.classList.add('bg-danger', 'text-light');
+        } else {
+            headerEl.classList.add('bg-info', 'text-light');
+        }
+
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
     init() {
         this.cacheElements();
         this.renderCategories();
@@ -113,8 +141,11 @@ class ThreatModelScorecard {
         this.progressBarFill = document.getElementById('progressBarFill');
         this.maxScoreLabel = document.getElementById('maxScoreLabel');
         this.riskMessage = document.getElementById('riskMessage');
-        this.resetBtn = document.getElementById('resetBtn');
-        this.saveBtn = document.getElementById('saveBtn');
+        // New elements for snapshot feature
+    this.projectNameInput = document.getElementById('projectName');
+    this.userNameInput = document.getElementById('userName');
+    this.saveSnapshotMdBtn = document.getElementById('saveSnapshotMdBtn');
+    this.snapshotTimestampEl = document.getElementById('snapshotTimestamp');
     }
 
     renderCategories() {
@@ -160,29 +191,31 @@ class ThreatModelScorecard {
             slider.addEventListener('input', (e) => this.onSliderChange(e));
         });
 
-        // Form reset
+        // Form reset - ensure sliders, fills and UI are fully reset
         this.form.addEventListener('reset', () => {
-            setTimeout(() => this.updateScores(), 0);
+            // run after the browser's native reset so values are consistent
+            setTimeout(() => {
+                document.querySelectorAll('.category-slider').forEach(slider => {
+                    // ensure explicit reset to 0
+                    slider.value = 0;
+                    // dispatch input so onSliderChange runs and updates description/score
+                    const evt = new Event('input', { bubbles: true });
+                    slider.dispatchEvent(evt);
+                    // also paint the fill explicitly as a fallback
+                    this.paintSliderFill(slider, 0);
+                });
+                // remove any saved assessment
+                localStorage.removeItem('threatAssessment');
+                // refresh aggregated UI
+                this.updateScores();
+            }, 0);
         });
 
         // Action buttons
-        this.saveBtn.addEventListener('click', () => this.saveAssessment());
-        if (this.resetBtn) {
-            this.resetBtn.addEventListener('click', () => {
-                // Explicitly reset each slider to 0 and trigger an input event so all listeners run
-                document.querySelectorAll('.category-slider').forEach(slider => {
-                    slider.value = 0;
-                    // dispatch input event so onSliderChange updates UI and score consistently
-                    const evt = new Event('input', { bubbles: true });
-                    slider.dispatchEvent(evt);
-                    // also ensure the painted fill is reset (in case listeners didn't run yet)
-                    this.paintSliderFill(slider, 0);
-                });
-                // Also reset any stored assessment
-                localStorage.removeItem('threatAssessment');
-                this.updateScores();
-            });
+        if (this.saveSnapshotMdBtn) {
+            this.saveSnapshotMdBtn.addEventListener('click', () => this.saveSnapshot());
         }
+        // top header reset button removed; bottom form reset handles full reset behavior
     }
 
     onSliderChange(event) {
@@ -234,33 +267,26 @@ class ThreatModelScorecard {
         const autonomy = aSlider ? parseInt(aSlider.value) : 0;
 
         // Rule P1 — Lethal Trifecta: Private Data + External Communication + Untrusted Content
-        // Prohibited if: sensitiveData >= 2 (sensitive/private) AND internet >= 1 (has external comms) AND untrusted >= 1
         if (sensitiveData >= 2 && internet >= 1 && untrusted >= 1) {
             return { score: 20, prohibitedRule: 'P1' };
         }
 
         // Rule P2 — Broad Sensitive Data + Moderate or Higher External Communication
-        // Prohibited if: sensitiveData == 3 (highest) AND internet >= 2 (moderate or unrestricted)
         if (sensitiveData === 3 && internet >= 2) {
             return { score: 20, prohibitedRule: 'P2' };
         }
 
         // Rule P3 — Admin / Root Tooling + Untrusted Content
-        // Prohibited if: tools == 4 (highest privileged) AND untrusted > 0
         if (tools === 4 && untrusted > 0) {
             return { score: 20, prohibitedRule: 'P3' };
         }
 
         // Rule P4 — Privileged Tooling + External Communication + Untrusted Content
-        // Prohibited if: tools == 4 AND internet >= 1 AND untrusted >= 1
-        // This one is redundant as it's covered by P3
         if (tools === 4 && internet >= 1 && untrusted >= 1) {
             return { score: 20, prohibitedRule: 'P4' };
         }
 
         // If no hard-stop rule fired, compute weighted normalized score out of 20
-        // Using normalized contributions (per scoring_justification.md):
-        // (SensitiveData / 3) * 5 + (HighRiskTools / 4) * 5 + (InternetAccess / 3) * 4 + (UntrustedInput / 2) * 4 + (Autonomy / 4) * 2
         let weightedScore = 0;
         for (let i = 0; i < 5; i++) {
             const category = this.categories[i];
@@ -272,8 +298,8 @@ class ThreatModelScorecard {
             }
         }
 
-    // Return object with score rounded to the nearest whole number and no prohibition rule
-    return { score: Math.round(weightedScore), prohibitedRule: null };
+        // Return object with score rounded to the nearest whole number and no prohibition rule
+        return { score: Math.round(weightedScore), prohibitedRule: null };
     }
 
     getRiskTier(score) {
@@ -290,6 +316,19 @@ class ThreatModelScorecard {
 
         // Update total score display
         this.totalScoreElement.textContent = totalScore;
+
+        // Update snapshot timestamp to now (the time the assessment was last updated)
+        try {
+            const now = new Date();
+            const formatted = now.toLocaleString();
+            if (this.snapshotTimestampEl) {
+                this.snapshotTimestampEl.textContent = formatted;
+            }
+            // keep as a property for saving snapshots
+            this._lastSnapshotTime = now.toISOString();
+        } catch (err) {
+            // ignore formatting errors
+        }
 
     // Update weighted score display (base score) if elements exist
     const baseScoreEl = document.getElementById('score-baseScore');
@@ -333,6 +372,98 @@ class ThreatModelScorecard {
         alert('Assessment saved successfully!');
     }
 
+    saveSnapshot() {
+        // Build snapshot metadata and content
+        try {
+            // Read raw inputs (may be empty)
+            const projectInputVal = (this.projectNameInput && this.projectNameInput.value.trim()) || '';
+            const userInputVal = (this.userNameInput && this.userNameInput.value.trim()) || '';
+            // Use human-friendly display defaults in the generated markdown, but don't persist those placeholders
+            const projectDisplay = projectInputVal || 'Unnamed Project';
+            const userDisplay = userInputVal || 'Unknown';
+            const timestampISO = this._lastSnapshotTime || new Date().toISOString();
+            const timestampDisplay = new Date(timestampISO).toLocaleString();
+
+            const result = this.calculateTotalScore();
+            const totalScore = Number(result.score);
+            const prohibitedRule = result.prohibitedRule;
+            const tier = this.getRiskTier(totalScore);
+
+            // Collect category scores and descriptions
+            const categoryLines = [];
+            const scoresObj = {};
+            for (let i = 0; i < 5; i++) {
+                const category = this.categories[i];
+                const slider = document.getElementById(`slider-${category.id}`);
+                const value = slider ? parseInt(slider.value) : 0;
+                scoresObj[category.id] = value;
+                const desc = (category.descriptions && category.descriptions[value]) ? category.descriptions[value] : '';
+                // Include only the human-friendly category name (no internal id) in the snapshot
+                categoryLines.push(`- ${category.name}: ${value}/${category.maxScore}\n  - ${desc}`);
+            }
+
+            // Build Markdown snapshot
+            const mdParts = [];
+            mdParts.push(`# Threat Assessment Snapshot`);
+            mdParts.push(``);
+            mdParts.push(`- Project: ${projectDisplay}`);
+            mdParts.push(`- Completed by: ${userDisplay}`);
+            // Use only the human-readable timestamp in the markdown snapshot
+            mdParts.push(`- Timestamp: ${timestampDisplay}`);
+            mdParts.push(`- Total score: ${isFinite(totalScore) ? totalScore : 0}/20`);
+            mdParts.push(`- Risk tier: ${tier ? tier.label : 'Unknown'}`);
+            if (prohibitedRule) {
+                mdParts.push(`- Prohibition: ${prohibitedRule} - ${this.prohibitionRuleDescriptions[prohibitedRule]}`);
+            }
+            mdParts.push(``);
+            mdParts.push(`## Risk message`);
+            mdParts.push(``);
+            mdParts.push(this.riskMessage ? this.riskMessage.textContent : '');
+            mdParts.push(``);
+            mdParts.push(`## Category scores`);
+            mdParts.push(...categoryLines);
+            mdParts.push(``);
+            mdParts.push(`---`);
+            mdParts.push(`Generated by AI Agent Threat Modelling Scorecard`);
+
+            const content = mdParts.join('\n');
+
+            // Trigger download
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const safeProject = (projectInputVal || 'project').replace(/[^a-z0-9-_]/gi, '_').slice(0, 40) || 'project';
+            const now = new Date(timestampISO);
+            const stamp = now.toISOString().replace(/[:.]/g, '-');
+            const filename = `threat-snapshot-${safeProject}-${stamp}.md`;
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            // Save a copy in localStorage for quick reload
+            const snapshotObj = {
+                // Persist null when inputs were left empty so load doesn't prefill placeholders
+                project: projectInputVal || null,
+                user: userInputVal || null,
+                timestamp: timestampISO,
+                totalScore: isFinite(totalScore) ? totalScore : 0,
+                tier: tier ? tier.label : null,
+                riskMessage: this.riskMessage ? this.riskMessage.textContent : '',
+                scores: scoresObj
+            };
+            localStorage.setItem('threatAssessmentSnapshot', JSON.stringify(snapshotObj));
+            this.showMessage('Snapshot downloaded', "Snapshot downloaded. Please add the file to your project's documentation folder.", 'success');
+        } catch (err) {
+            console.error('Failed to save snapshot', err);
+            this.showMessage('Snapshot save failed', 'Failed to save snapshot. See console for details.', 'danger');
+        }
+    }
+
+    
+
     editAssessment() {
         // This would enable editing mode
         // For now, it's already in edit mode when user adjusts sliders
@@ -373,6 +504,22 @@ class ThreatModelScorecard {
                 }
             }
             this.updateScores();
+        }
+
+        // If a snapshot object exists, prefill project/user and timestamp display
+        const snap = localStorage.getItem('threatAssessmentSnapshot');
+        if (snap) {
+            try {
+                const obj = JSON.parse(snap);
+                // Do not prefill project/user inputs from localStorage on load.
+                // Keep these inputs empty so placeholders are shown after a hard refresh.
+                if (this.snapshotTimestampEl && obj.timestamp) {
+                    this.snapshotTimestampEl.textContent = new Date(obj.timestamp).toLocaleString();
+                    this._lastSnapshotTime = obj.timestamp;
+                }
+            } catch (err) {
+                // ignore parse errors
+            }
         }
     }
 }
