@@ -43,6 +43,8 @@ Design choice: placeholder values such as "Unnamed Project" / "Unknown" are used
 
 ## Scoring and prohibition rules (short)
 
+For detailed descriptions on the scoring justifications please see the doc [HERE](scoring_justification.md)
+
 - Score is computed as a weighted normalized sum and rounded to the nearest whole number on a 0–20 scale.
 - Prohibition/Hard-stop rules (P1–P4) examine specific high-risk combinations (sensitive data + external comms + untrusted input, admin tools with untrusted input, etc.). If a prohibition rule applies the score will be set to the maximum (20) and a prohibition code returned.
 
