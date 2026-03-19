@@ -2,6 +2,8 @@
 
 An interactive scorecard for assessing the security risk of AI agents and agentic workflows. This README reflects the current implementation: compact Bootstrap UI, Bootstrap range sliders with painted left-side fills, modal-based messaging, and Markdown snapshot export.
 
+Live site is [HERE](https://miniature-garbanzo-3qy9we8.pages.github.io/)
+
 ## Features
 
 - Compact, responsive UI built with Bootstrap 5
