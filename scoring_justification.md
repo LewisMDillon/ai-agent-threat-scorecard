@@ -15,7 +15,6 @@ This split is intentional. OWASP's guidance does not treat every capability as m
 
 ## Design Principles
 
-For detailed descriptions on the scoring justifications please see the doc [HERE](scoring_justification.md)
 
 ### 1. Least Agency, not just Least Privilege
 
