@@ -15,6 +15,8 @@ This split is intentional. OWASP's guidance does not treat every capability as m
 
 ## Design Principles
 
+For detailed descriptions on the scoring justifications please see the doc [HERE](scoring_justification.md)
+
 ### 1. Least Agency, not just Least Privilege
 
 OWASP explicitly extends the usual least-privilege idea with **Least Agency**, warning that unnecessary autonomy expands the attack surface and can turn minor issues into system-wide failures.[^owasp-least-agency]
@@ -293,20 +295,22 @@ This is more faithful to the OWASP agentic security model than a pure weighted s
 
 ## References
 
-[^owasp-letter]: OWASP Top 10 for Agentic Applications 2026, Letter from the leaders and framing of agentic systems, pp. 6-7. See uploaded PDF: `OWASP-Top-10-for-Agentic-Applications-2026-12.6-1.pdf`. Source excerpt available at fileciteturn11file0.
-[^owasp-at-a-glance]: OWASP Top 10 for Agentic Applications 2026, “Agentic Top 10 At A Glance,” p. 8. Source excerpt available at fileciteturn11file0.
-[^owasp-least-agency]: OWASP Top 10 for Agentic Applications 2026, statement that agents amplify existing vulnerabilities and recommendation for “Least-Agency,” p. 7. Source excerpt available at fileciteturn11file0.
-[^asi01-desc]: OWASP Top 10 for Agentic Applications 2026, ASI01 description, p. 9. Source excerpt available at fileciteturn11file0.
-[^asi01-examples]: OWASP Top 10 for Agentic Applications 2026, ASI01 common examples, p. 9. Source excerpt available at fileciteturn11file0.
-[^asi01-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI01 example attack scenarios, p. 10. Source excerpt available at fileciteturn11file0.
-[^asi01-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI01 prevention and mitigation guidelines, pp. 10-11. Source excerpt available at fileciteturn11file0.
-[^asi02-desc]: OWASP Top 10 for Agentic Applications 2026, ASI02 description, p. 12. Source excerpt available at fileciteturn11file1.
-[^asi02-examples]: OWASP Top 10 for Agentic Applications 2026, ASI02 common examples, p. 12. Source excerpt available at fileciteturn11file1.
-[^asi02-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI02 example attack scenarios, p. 13. Source excerpt available at fileciteturn11file1.
-[^asi02-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI02 prevention and mitigation guidelines, pp. 13-14. Source excerpt available at fileciteturn11file1.
-[^asi03-desc]: OWASP Top 10 for Agentic Applications 2026, ASI03 description, p. 15. Source excerpt available at fileciteturn11file1.
-[^asi03-examples]: OWASP Top 10 for Agentic Applications 2026, ASI03 common examples, pp. 15-16. Source excerpt available at fileciteturn11file1.
-[^asi03-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI03 example attack scenarios, p. 16. Source excerpt available at fileciteturn11file1.
-[^asi03-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI03 prevention and mitigation guidelines, p. 17. Source excerpt available at fileciteturn11file1.
-[^asi08-toc]: OWASP Top 10 for Agentic Applications 2026, ASI08 listing in the table of contents and top-10 map, pp. 4-5 and 8. Source excerpt available at fileciteturn11file0.
-[^appendix-trifecta]: OWASP Top 10 for Agentic Applications 2026, Appendix D incident tracker reference to “The Trifecta: How Three New Gemini Vulnerabilities ... Allowed Private Data Exfiltration,” p. 27 in the source excerpt / Appendix D reference listing. Source excerpt available at fileciteturn10file9.
+See [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) for all reference sources.
+
+[^owasp-letter]: OWASP Top 10 for Agentic Applications 2026, Letter from the leaders and framing of agentic systems, pp. 6-7.
+[^owasp-at-a-glance]: OWASP Top 10 for Agentic Applications 2026, “Agentic Top 10 At A Glance,” p. 8. 
+[^owasp-least-agency]: OWASP Top 10 for Agentic Applications 2026, statement that agents amplify existing vulnerabilities and recommendation for “Least-Agency,” p. 7
+[^asi01-desc]: OWASP Top 10 for Agentic Applications 2026, ASI01 description, p. 9.
+[^asi01-examples]: OWASP Top 10 for Agentic Applications 2026, ASI01 common examples, p. 9.
+[^asi01-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI01 example attack scenarios, p. 10.
+[^asi01-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI01 prevention and mitigation guidelines, pp. 10-11.
+[^asi02-desc]: OWASP Top 10 for Agentic Applications 2026, ASI02 description, p. 12.
+[^asi02-examples]: OWASP Top 10 for Agentic Applications 2026, ASI02 common examples, p. 12.
+[^asi02-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI02 example attack scenarios, p. 13.
+[^asi02-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI02 prevention and mitigation guidelines, pp. 13-14.
+[^asi03-desc]: OWASP Top 10 for Agentic Applications 2026, ASI03 description, p. 15.
+[^asi03-examples]: OWASP Top 10 for Agentic Applications 2026, ASI03 common examples, pp. 15-16.
+[^asi03-scenarios]: OWASP Top 10 for Agentic Applications 2026, ASI03 example attack scenarios, p. 16.
+[^asi03-mitigations]: OWASP Top 10 for Agentic Applications 2026, ASI03 prevention and mitigation guidelines, p. 17.
+[^asi08-toc]: OWASP Top 10 for Agentic Applications 2026, ASI08 listing in the table of contents and top-10 map, pp. 4-5 and 8.
+[^appendix-trifecta]: OWASP Top 10 for Agentic Applications 2026, Appendix D incident tracker reference to “The Trifecta: How Three New Gemini Vulnerabilities ... Allowed Private Data Exfiltration,” p. 27 in the source excerpt / Appendix D reference listing.
