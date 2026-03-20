@@ -146,6 +146,8 @@ class ThreatModelScorecard {
     this.userNameInput = document.getElementById('userName');
     this.saveSnapshotMdBtn = document.getElementById('saveSnapshotMdBtn');
     this.snapshotTimestampEl = document.getElementById('snapshotTimestamp');
+    this.loadSnapshotBtn = document.getElementById('loadSnapshotBtn');
+    this.loadSnapshotFileInput = document.getElementById('loadSnapshotFile');
     }
 
     renderCategories() {
@@ -214,6 +216,26 @@ class ThreatModelScorecard {
         // Action buttons
         if (this.saveSnapshotMdBtn) {
             this.saveSnapshotMdBtn.addEventListener('click', () => this.saveSnapshot());
+        }
+        if (this.loadSnapshotBtn && this.loadSnapshotFileInput) {
+            this.loadSnapshotBtn.addEventListener('click', () => this.loadSnapshotFileInput.click());
+            this.loadSnapshotFileInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        this.loadSnapshotFromMd(String(ev.target.result || ''));
+                    } catch (err) {
+                        console.error('Failed to load snapshot file', err);
+                        this.showMessage('Load failed', 'Failed to parse snapshot file. See console for details.', 'danger');
+                    } finally {
+                        // clear input so same file can be reselected later if needed
+                        this.loadSnapshotFileInput.value = '';
+                    }
+                };
+                reader.readAsText(file);
+            });
         }
         // top header reset button removed; bottom form reset handles full reset behavior
     }
@@ -460,6 +482,113 @@ class ThreatModelScorecard {
             console.error('Failed to save snapshot', err);
             this.showMessage('Snapshot save failed', 'Failed to save snapshot. See console for details.', 'danger');
         }
+    }
+
+    loadSnapshotFromMd(md) {
+        if (!md || typeof md !== 'string') throw new Error('Invalid content');
+
+        // Helper to extract single-line fields
+        const extract = (re) => {
+            const m = md.match(re);
+            return m ? m[1].trim() : null;
+        };
+
+        const project = extract(/^- Project:\s*(.*)$/m) || '';
+        const user = extract(/^- Completed by:\s*(.*)$/m) || '';
+        const timestampDisplay = extract(/^- Timestamp:\s*(.*)$/m) || '';
+        const totalLine = extract(/^- Total score:\s*(.*)$/m) || '';
+        const tierLine = extract(/^- Risk tier:\s*(.*)$/m) || '';
+
+        // Risk message block
+        let riskMessage = '';
+        const rm = md.match(/## Risk message\s*([\s\S]*?)\n## Category scores/);
+        if (rm && rm[1]) riskMessage = rm[1].trim();
+
+        // Parse category scores (lines like: - Internet Access: 1/3)
+        const catIndex = md.indexOf('## Category scores');
+        const categoryLines = catIndex >= 0 ? md.slice(catIndex).split(/\r?\n/) : [];
+
+        const scores = {};
+        for (let i = 0; i < categoryLines.length; i++) {
+            const line = categoryLines[i].trim();
+            const m = line.match(/^-\s*(.+?):\s*(\d+)\/(\d+)/);
+            if (m) {
+                const name = m[1].trim();
+                const val = parseInt(m[2], 10);
+                // map category name back to id
+                const cat = this.categories.find(c => c.name === name);
+                if (cat) {
+                    scores[cat.id] = val;
+                } else {
+                    // not found - try a case-insensitive match
+                    const cat2 = this.categories.find(c => c.name.toLowerCase() === name.toLowerCase());
+                    if (cat2) scores[cat2.id] = val;
+                    else console.warn('Unknown category name in snapshot:', name);
+                }
+            }
+        }
+
+        // Apply parsed values to the UI
+        // Set inputs
+        if (this.projectNameInput) this.projectNameInput.value = project || '';
+        if (this.userNameInput) this.userNameInput.value = user || '';
+
+        // Set sliders
+        Object.entries(scores).forEach(([categoryId, value]) => {
+            const slider = document.getElementById(`slider-${categoryId}`);
+            if (slider) {
+                slider.value = value;
+                const evt = new Event('input', { bubbles: true });
+                slider.dispatchEvent(evt);
+                // ensure number label updated
+                const scoreEl = document.getElementById(`score-${categoryId}`);
+                if (scoreEl) scoreEl.textContent = value;
+                const category = this.categories.find(c => c.id === categoryId);
+                if (category) {
+                    const categoryItem = document.querySelector(`[data-category-id="${categoryId}"]`);
+                    if (categoryItem) {
+                        const descEl = categoryItem.querySelector('.category-description');
+                        if (descEl && category.descriptions && category.descriptions[value]) {
+                            descEl.textContent = category.descriptions[value];
+                        }
+                    }
+                }
+                const percentage = (value / (slider.max || 1)) * 100;
+                this.paintSliderFill(slider, percentage);
+            }
+        });
+
+        // Update timestamp display and internal last snapshot time
+        try {
+            if (this.snapshotTimestampEl) this.snapshotTimestampEl.textContent = timestampDisplay || new Date().toLocaleString();
+            // Attempt to parse the human-friendly timestamp into ISO; fallback to now
+            const parsed = Date.parse(timestampDisplay);
+            this._lastSnapshotTime = isNaN(parsed) ? new Date().toISOString() : new Date(parsed).toISOString();
+        } catch (err) {
+            this._lastSnapshotTime = new Date().toISOString();
+        }
+
+        // Persist parsed snapshot to localStorage for quick reload
+        const snapshotObj = {
+            project: project || null,
+            user: user || null,
+            timestamp: this._lastSnapshotTime,
+            totalScore: totalLine ? Number(totalLine.replace(/[^0-9.-]+/g, '')) : null,
+            tier: tierLine || null,
+            riskMessage: riskMessage || '',
+            scores: scores
+        };
+        localStorage.setItem('threatAssessmentSnapshot', JSON.stringify(snapshotObj));
+        // Also save raw per-category assessment
+        localStorage.setItem('threatAssessment', JSON.stringify(scores));
+
+        // Refresh aggregate UI
+        this.updateScores();
+
+        // After updateScores overwrites timestamp, reapply the loaded timestamp display
+        if (this.snapshotTimestampEl) this.snapshotTimestampEl.textContent = timestampDisplay || new Date().toLocaleString();
+
+        this.showMessage('Snapshot loaded', 'Snapshot file loaded and applied.', 'success');
     }
 
     
