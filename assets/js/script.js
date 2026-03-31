@@ -82,8 +82,8 @@ class ThreatModelScorecard {
 
         this.riskMessages = {
             minimal: 'Low Risk (0-5): No approval required. Standard security practices are sufficient.',
-            low: 'Medium Risk (6-10): Approval needed. Security controls and monitoring are required.',
-            medium: 'High Risk (11-15): Approval needed. Comprehensive security review needed before deployment.',
+            low: 'Medium Risk (6-10): Approval needed by engineering team. Security controls and monitoring are required.',
+            medium: 'High Risk (11-15): Approval needed by engineering team. Comprehensive security review needed before deployment.',
             critical: 'Prohibited (16-20): Not allowed. Redesign required.'
         };
 
@@ -221,7 +221,7 @@ class ThreatModelScorecard {
         // Save Snapshot: show format choice modal
         if (this.saveSnapshotBtn && this.snapshotFormatModalEl) {
             this.saveSnapshotBtn.addEventListener('click', () => {
-                const modal = new bootstrap.Modal(this.snapshotFormatModalEl);
+                const modal = bootstrap.Modal.getOrCreateInstance(this.snapshotFormatModalEl);
                 modal.show();
             });
         }

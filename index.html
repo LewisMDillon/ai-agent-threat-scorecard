@@ -115,7 +115,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 Code Institute.</p><p> Security recommendations based on Gen AI Security Project and <a target="_blank" href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications 2026</a></p></p>
+            <p>&copy; 2026 Code Institute.</p><p> Security recommendations based on Gen AI Security Project and <a target="_blank" rel="noopener noreferrer" href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications 2026</a></p>
         </footer>
         <!-- Print-only footer (hidden on screen) -->
         <div class="print-only-footer" id="printFooter">
@@ -145,15 +145,15 @@
         </div>
 
         <!-- Snapshot format choice modal -->
-        <div class="modal fade" id="snapshotFormatModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="snapshotFormatModal" tabindex="-1" aria-hidden="true" aria-labelledby="snapshotFormatModalTitle" aria-describedby="snapshotFormatModalDescription">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content bg-dark text-light">
                     <div class="modal-header bg-success text-light">
-                        <h5 class="modal-title">Save Snapshot</h5>
+                        <h5 class="modal-title" id="snapshotFormatModalTitle">Save Snapshot</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <p class="mb-3">Choose a format:</p>
+                        <p class="mb-3" id="snapshotFormatModalDescription">Choose a format:</p>
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-outline-light" id="snapshotChoiceMd">
                                 Markdown (.md)
