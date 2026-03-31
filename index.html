@@ -107,9 +107,8 @@
                 </div>
                 <div class="action-buttons d-flex justify-content-center mt-3">
                     <button type="reset" class="btn btn-outline-light me-2">Reset</button>
-                    <button type="button" class="btn btn-success me-2" id="saveSnapshotMdBtn">Save Snapshot (Markdown)</button>
+                    <button type="button" class="btn btn-success me-2" id="saveSnapshotBtn">Save Snapshot</button>
                     <button type="button" class="btn btn-outline-light" id="loadSnapshotBtn">Load Snapshot</button>
-                    <button type="button" class="btn btn-outline-light ms-2" id="exportPdfBtn">Export PDF</button>
                     <input type="file" id="loadSnapshotFile" accept=".md,text/markdown" style="display:none">
                 </div>
             </form>
@@ -140,6 +139,29 @@
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Snapshot format choice modal -->
+        <div class="modal fade" id="snapshotFormatModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header bg-success text-light">
+                        <h5 class="modal-title">Save Snapshot</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="mb-3">Choose a format:</p>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-light" id="snapshotChoiceMd">
+                                Markdown (.md)
+                            </button>
+                            <button type="button" class="btn btn-outline-light" id="snapshotChoicePdf">
+                                PDF
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

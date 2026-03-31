@@ -144,12 +144,14 @@ class ThreatModelScorecard {
         // New elements for snapshot feature
     this.projectNameInput = document.getElementById('projectName');
     this.userNameInput = document.getElementById('userName');
-    this.saveSnapshotMdBtn = document.getElementById('saveSnapshotMdBtn');
+    this.saveSnapshotBtn = document.getElementById('saveSnapshotBtn');
     this.snapshotTimestampEl = document.getElementById('snapshotTimestamp');
     this.loadSnapshotBtn = document.getElementById('loadSnapshotBtn');
     this.loadSnapshotFileInput = document.getElementById('loadSnapshotFile');
-    // Export to PDF button (triggers print which uses print.css)
-    this.exportPdfBtn = document.getElementById('exportPdfBtn');
+    // Format choice modal elements
+    this.snapshotFormatModalEl = document.getElementById('snapshotFormatModal');
+    this.snapshotChoiceMd = document.getElementById('snapshotChoiceMd');
+    this.snapshotChoicePdf = document.getElementById('snapshotChoicePdf');
     }
 
     renderCategories() {
@@ -216,9 +218,36 @@ class ThreatModelScorecard {
         });
 
         // Action buttons
-        if (this.saveSnapshotMdBtn) {
-            this.saveSnapshotMdBtn.addEventListener('click', () => this.saveSnapshot());
+        // Save Snapshot: show format choice modal
+        if (this.saveSnapshotBtn && this.snapshotFormatModalEl) {
+            this.saveSnapshotBtn.addEventListener('click', () => {
+                const modal = new bootstrap.Modal(this.snapshotFormatModalEl);
+                modal.show();
+            });
         }
+
+        // Format choice: Markdown
+        if (this.snapshotChoiceMd) {
+            this.snapshotChoiceMd.addEventListener('click', () => {
+                // hide the format modal first
+                const modal = bootstrap.Modal.getInstance(this.snapshotFormatModalEl);
+                if (modal) modal.hide();
+                this.saveSnapshot();
+            });
+        }
+
+        // Format choice: PDF
+        if (this.snapshotChoicePdf) {
+            this.snapshotChoicePdf.addEventListener('click', () => {
+                const modal = bootstrap.Modal.getInstance(this.snapshotFormatModalEl);
+                if (modal) modal.hide();
+                try { this.updateScores(); } catch (err) { console.warn('Failed to refresh scores before print', err); }
+                this.populatePrintElements();
+                // Small delay to let the modal fully close before triggering print
+                setTimeout(() => window.print(), 300);
+            });
+        }
+
         if (this.loadSnapshotBtn && this.loadSnapshotFileInput) {
             this.loadSnapshotBtn.addEventListener('click', () => this.loadSnapshotFileInput.click());
             this.loadSnapshotFileInput.addEventListener('change', (e) => {
@@ -239,21 +268,6 @@ class ThreatModelScorecard {
                 reader.readAsText(file);
             });
         }
-            // Export PDF handler: update scores to ensure values are current, then trigger print.
-            if (this.exportPdfBtn) {
-                this.exportPdfBtn.addEventListener('click', () => {
-                    // ensure all computed UI state is fresh
-                    try {
-                        this.updateScores();
-                    } catch (err) {
-                        console.warn('Failed to refresh scores before print', err);
-                    }
-                    // populate the hidden print-only elements with current data
-                    this.populatePrintElements();
-                    // Trigger browser print; the print stylesheet will generate a clean PDF-friendly output
-                    window.print();
-                });
-            }
         // top header reset button removed; bottom form reset handles full reset behavior
     }
 
