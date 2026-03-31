@@ -560,3 +560,10 @@ footer {
     }
 }
 }
+
+/* Hide print-only elements on screen (they only appear in @media print via print.css) */
+.print-only-meta,
+.print-only-summary,
+.print-only-footer {
+    display: none !important;
+}

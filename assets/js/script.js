@@ -148,6 +148,8 @@ class ThreatModelScorecard {
     this.snapshotTimestampEl = document.getElementById('snapshotTimestamp');
     this.loadSnapshotBtn = document.getElementById('loadSnapshotBtn');
     this.loadSnapshotFileInput = document.getElementById('loadSnapshotFile');
+    // Export to PDF button (triggers print which uses print.css)
+    this.exportPdfBtn = document.getElementById('exportPdfBtn');
     }
 
     renderCategories() {
@@ -237,6 +239,21 @@ class ThreatModelScorecard {
                 reader.readAsText(file);
             });
         }
+            // Export PDF handler: update scores to ensure values are current, then trigger print.
+            if (this.exportPdfBtn) {
+                this.exportPdfBtn.addEventListener('click', () => {
+                    // ensure all computed UI state is fresh
+                    try {
+                        this.updateScores();
+                    } catch (err) {
+                        console.warn('Failed to refresh scores before print', err);
+                    }
+                    // populate the hidden print-only elements with current data
+                    this.populatePrintElements();
+                    // Trigger browser print; the print stylesheet will generate a clean PDF-friendly output
+                    window.print();
+                });
+            }
         // top header reset button removed; bottom form reset handles full reset behavior
     }
 
@@ -589,6 +606,38 @@ class ThreatModelScorecard {
         if (this.snapshotTimestampEl) this.snapshotTimestampEl.textContent = timestampDisplay || new Date().toLocaleString();
 
         this.showMessage('Snapshot loaded', 'Snapshot file loaded and applied.', 'success');
+    }
+
+    /**
+     * Populate the hidden print-only DOM elements with current assessment data.
+     * Called immediately before window.print() so the PDF contains fresh values.
+     */
+    populatePrintElements() {
+        // Metadata
+        const projectVal = (this.projectNameInput && this.projectNameInput.value.trim()) || 'Unnamed Project';
+        const userVal = (this.userNameInput && this.userNameInput.value.trim()) || 'Unknown';
+        const timestampVal = this.snapshotTimestampEl ? this.snapshotTimestampEl.textContent : new Date().toLocaleString();
+
+        const printProject = document.getElementById('printProject');
+        const printUser = document.getElementById('printUser');
+        const printTimestamp = document.getElementById('printTimestamp');
+        if (printProject) printProject.textContent = projectVal;
+        if (printUser) printUser.textContent = userVal;
+        if (printTimestamp) printTimestamp.textContent = timestampVal;
+
+        // Score summary
+        const result = this.calculateTotalScore();
+        const totalScore = Number(result.score) || 0;
+        const tier = this.getRiskTier(totalScore);
+
+        const printTotalScore = document.getElementById('printTotalScore');
+        const printRiskTier = document.getElementById('printRiskTier');
+        const printRiskMessage = document.getElementById('printRiskMessage');
+        if (printTotalScore) printTotalScore.textContent = totalScore;
+        if (printRiskTier) printRiskTier.textContent = tier ? tier.label.toUpperCase() : 'UNKNOWN';
+        if (printRiskMessage) {
+            printRiskMessage.textContent = this.riskMessage ? this.riskMessage.textContent : '';
+        }
     }
 
     

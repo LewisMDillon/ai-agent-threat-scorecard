@@ -1,0 +1,238 @@
+/* ==========================================================================
+   PRINT STYLESHEET — AI Agent Threat Modelling Scorecard
+   Applied only via media="print".
+   Produces a clean, minimal, single-page A4 PDF report.
+   ========================================================================== */
+
+/* ---- Page setup ---- */
+@page {
+    size: A4 portrait;
+    margin: 14mm 16mm;
+}
+
+/* ---- Base reset for print ---- */
+*, *::before, *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+}
+
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif !important;
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+}
+
+/* ---- Hide ALL interactive / screen-only elements ---- */
+button,
+.btn,
+.action-buttons,
+input[type="range"],
+.category-slider,
+.category-input-group,
+.form-control,
+.top-meta,
+footer,
+.btn-close,
+.modal,
+.progress-section,
+.score-summary,
+#snapshotTimestamp {
+    display: none !important;
+}
+
+/* ---- Show print-only elements ---- */
+.print-only-meta,
+.print-only-summary,
+.print-only-footer {
+    display: block !important;
+}
+
+/* ---- Container: remove dark theme padding ---- */
+.container, .ci-dark {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+header {
+    display: block !important;
+    margin-bottom: 6pt !important;
+    border-bottom: 2pt solid #000 !important;
+    padding-bottom: 6pt !important;
+}
+
+#mainTitle {
+    font-size: 16pt !important;
+    font-weight: 700 !important;
+    margin: 0 0 4pt 0 !important;
+    letter-spacing: 0.3pt !important;
+}
+
+/* ---- Print metadata (Project / User / Date) ---- */
+.print-only-meta {
+    margin-top: 4pt;
+}
+.print-meta-row {
+    font-size: 9pt !important;
+    margin-bottom: 1pt !important;
+}
+.print-meta-row strong {
+    display: inline-block;
+    min-width: 80pt;
+}
+
+/* ==========================================================================
+   SCORE SUMMARY (print-only table)
+   ========================================================================== */
+.print-only-summary {
+    margin: 8pt 0 6pt 0 !important;
+    padding: 6pt 0 !important;
+    border-bottom: 1pt solid #bbb !important;
+}
+
+.print-summary-table {
+    width: auto !important;
+    border-collapse: collapse !important;
+}
+.print-summary-cell {
+    padding: 2pt 24pt 2pt 0 !important;
+    vertical-align: bottom !important;
+}
+.print-summary-label {
+    display: block !important;
+    font-size: 7pt !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5pt !important;
+    color: #555 !important;
+    margin-bottom: 1pt !important;
+}
+.print-summary-value {
+    font-size: 18pt !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+.print-summary-sublabel {
+    font-size: 9pt !important;
+    color: #666 !important;
+    margin-left: 2pt !important;
+}
+
+/* Risk message */
+.print-risk-message {
+    font-size: 8.5pt !important;
+    margin-top: 4pt !important;
+    font-style: italic !important;
+    line-height: 1.3 !important;
+    color: #222 !important;
+}
+
+/* ==========================================================================
+   CATEGORIES
+   ========================================================================== */
+.section-title {
+    font-size: 11pt !important;
+    font-weight: 700 !important;
+    margin: 6pt 0 4pt 0 !important;
+    border-bottom: 0.5pt solid #ccc !important;
+    padding-bottom: 2pt !important;
+}
+
+.categories-container {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Each category block */
+.category-item,
+.category-item.card {
+    display: block !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 4pt 0 3pt 0 !important;
+    margin: 0 !important;
+    page-break-inside: avoid !important;
+}
+
+/* Thin separator between categories */
+.category-item + .category-item {
+    border-top: 0.5pt solid #ddd !important;
+}
+
+.category-item .card-body {
+    padding: 0 !important;
+}
+
+/* Category name + score on same line */
+.category-item .d-flex {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    margin-bottom: 1pt !important;
+}
+
+.category-name {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+
+.category-score {
+    font-size: 9pt !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    white-space: nowrap !important;
+}
+
+/* Description text */
+.category-description {
+    font-size: 8.5pt !important;
+    color: #222 !important;
+    margin: 0 0 2pt 0 !important;
+    line-height: 1.3 !important;
+}
+
+/* ==========================================================================
+   FOOTER (print-only)
+   ========================================================================== */
+.print-only-footer {
+    margin-top: 10pt !important;
+    padding-top: 4pt !important;
+    border-top: 0.5pt solid #bbb !important;
+    font-size: 7pt !important;
+    color: #888 !important;
+    text-align: center !important;
+}
+
+/* ==========================================================================
+   GENERAL HELPERS
+   ========================================================================== */
+/* Force links to print as plain text */
+a, a[href] {
+    text-decoration: none !important;
+}
+a[href]::after {
+    content: none !important;
+}
+
+/* Prevent page breaks inside any block */
+h1, h2, h3,
+.category-item,
+.print-only-summary {
+    page-break-inside: avoid !important;
+}
+
+/* Ensure images (if any) scale */
+img {
+    max-width: 100% !important;
+    height: auto !important;
+}
