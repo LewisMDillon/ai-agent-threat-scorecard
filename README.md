@@ -2,7 +2,7 @@
 
 An interactive scorecard for assessing the security risk of AI agents and agentic workflows. This README reflects the current implementation: compact Bootstrap UI, Bootstrap range sliders with painted left-side fills, modal-based messaging, and Markdown snapshot export.
 
-Live site is [HERE](https://miniature-garbanzo-3qy9we8.pages.github.io/)
+Live site is [HERE](https://ai-agent-threat-scorecard-ac707295e1e5.herokuapp.com/)
 
 ## Features
 
@@ -77,4 +77,6 @@ For detailed descriptions on the scoring justifications please see the doc [HERE
 AI Agent Threat Modelling Scorecard © 2026 Code Institute
 
 Security recommendations are informed by the Gen AI Security Project and the OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+
+Built by Lewis Dillon for Code Institute. Published as a portfolio copy with permission.”
 
