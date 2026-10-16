@@ -78,5 +78,5 @@ AI Agent Threat Modelling Scorecard © 2026 Code Institute
 
 Security recommendations are informed by the Gen AI Security Project and the OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
 
-Built by Lewis Dillon for Code Institute. Published as a portfolio copy with permission.”
+Built by Lewis Dillon for Code Institute. Published as a portfolio copy with permission.
 
